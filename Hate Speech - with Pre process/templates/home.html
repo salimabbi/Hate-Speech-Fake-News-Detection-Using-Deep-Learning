@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <title>Fake News Detector</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script src="../static/js/predict.js" type="text/javascript"></script>
+
+	<link rel="stylesheet" type="text/css" href="../static/css/style.css">
+</head>
+<body>
+	<header>
+		<div class="container">
+            <div id="brandname">
+                <h1 style="font-family: 'Monaco'; color: white;">Is This Hate Speech?</h1>
+            </div>
+        </div>
+    </header>
+    <br/>
+    <div class="container">
+        <span style="color: black; padding-top: 30px;">Copy/paste</span>
+        <span style="color: black; padding-top: 30px;">LSTM -Hate speech Detection Using Deep Learning</span>
+    </div>
+	<div class="container" style="padding-top: 30px;">
+        <label>
+            <textarea placeholder="Article Text" name="text" id="article-text" rows="10" cols="100" required></textarea>
+        </label>
+        <div id="container">
+            <button type="button" class="predict-button" value="predict" id="predict-button-id">Predict</button>
+        </div>​
+        <div id="container">
+            <div class="loader" id="loader-id" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 id="result-banner"></h2>
+    </div>
+</body>
+
+<script>
+    document.getElementById("predict-button-id").addEventListener("click", function() {
+        
+        let loader = document.getElementById('loader-id');
+        let articleText = document.getElementById("article-text");
+        let resultBanner = document.getElementById("result-banner");
+
+        // start spinner and remove old prediction
+        console.log(loader);
+        loader.style.display = 'inline';
+        console.log(loader.style);
+        resultBanner.textContent = '';
+
+        let prediction = getPrediction(articleText.value);
+        
+        prediction.then(function (response) {
+            loader.style.display = 'none';
+            if (response === "real") {
+                articleText.style.border = "3px solid green";
+                resultBanner.style.color = "green";
+                resultBanner.textContent = "Not hate speech!";
+            } else {
+                articleText.style.border = "3px solid red";
+                resultBanner.style.color = "red";
+                resultBanner.textContent = "Hate speech!";
+            }}, function (error) {
+                console.error("Prediction API call failed with error: " + error);
+            });
+}, false);
+</script>
+</html>
